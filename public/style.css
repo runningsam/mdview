@@ -21,15 +21,13 @@ body {
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .container {
     width: 100%;
     max-width: 600px;
     padding: 2rem;
+    margin: 2rem auto;
 }
 
 header {
@@ -188,7 +186,10 @@ footer {
 /* Preview page styles */
 .preview-container {
     max-width: 900px;
+    width: 100%;
     padding: 2rem;
+    margin: 0 auto;
+    box-sizing: border-box;
 }
 
 .markdown-body {
@@ -223,12 +224,12 @@ footer {
 /* Mobile responsive styles */
 @media (max-width: 768px) {
     body {
-        align-items: flex-start;
-        padding-top: 1rem;
+        padding-top: 0;
     }
 
     .container {
         padding: 1rem;
+        margin: 1rem auto;
     }
 
     h1 {
