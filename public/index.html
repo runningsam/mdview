@@ -4,49 +4,220 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MDView - Markdown Preview</title>
-    <link rel="stylesheet" href="/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4f46e5',
+                        'primary-hover': '#4338ca',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .upload-box {
+            border: 2px dashed #e2e8f0;
+            transition: all 0.2s;
+        }
+        
+        .upload-box:hover,
+        .upload-box.dragover {
+            border-color: #4f46e5;
+            background: #f8fafc;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e2e8f0;
+            border-top-color: #4f46e5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Preview page markdown styles */
+        .markdown-body {
+            line-height: 1.7;
+        }
+        
+        .markdown-body h1 {
+            font-size: 1.875rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        
+        .markdown-body h2 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 0.75rem;
+            font-weight: 600;
+        }
+        
+        .markdown-body h3 {
+            font-size: 1.25rem;
+            margin: 1rem 0 0.5rem;
+            font-weight: 600;
+        }
+        
+        .markdown-body p {
+            margin: 1rem 0;
+        }
+        
+        .markdown-body code {
+            background: #f1f5f9;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        
+        .markdown-body pre {
+            background: #f1f5f9;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .markdown-body pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        .markdown-body ul,
+        .markdown-body ol {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+        
+        .markdown-body blockquote {
+            border-left: 4px solid #4f46e5;
+            margin: 1rem 0;
+            padding-left: 1rem;
+            color: #64748b;
+        }
+        
+        .markdown-body a {
+            color: #4f46e5;
+            text-decoration: underline;
+        }
+        
+        .markdown-body img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        
+        .markdown-body table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+        
+        .markdown-body th,
+        .markdown-body td {
+            border: 1px solid #e2e8f0;
+            padding: 0.5rem 0.75rem;
+            text-align: left;
+        }
+        
+        .markdown-body th {
+            background: #f8fafc;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .markdown-body pre {
+                font-size: 0.85rem;
+            }
+            
+            .markdown-body table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
 </head>
-<body>
-    <div class="container">
-        <header>
-            <h1>📄 MDView</h1>
-            <p class="subtitle">Upload markdown files and get shareable preview URLs</p>
-        </header>
-
-        <main>
-            <div id="upload-section">
-                <div class="upload-box" id="drop-zone">
-                    <input type="file" id="file-input" accept=".md,.markdown,.txt" hidden>
-                    <div class="upload-icon">📁</div>
-                    <p class="upload-text">Drag & drop your .md file here</p>
-                    <p class="upload-subtext">or click to select</p>
-                    <button class="btn" id="upload-btn">Select File</button>
+<body class="bg-slate-50 min-h-screen">
+    <!-- Upload Page -->
+    <div id="upload-page" class="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6">
+        <div class="w-full max-w-md">
+            <!-- Header -->
+            <header class="text-center mb-6 sm:mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-2xl mb-4">
+                    <i class="fa-solid fa-file-lines text-3xl text-primary"></i>
                 </div>
-
-                <div id="progress" class="hidden">
-                    <div class="spinner"></div>
-                    <p>Processing...</p>
-                </div>
-
-                <div id="result" class="hidden">
-                    <div class="success-icon">✅</div>
-                    <p>Your preview URL:</p>
-                    <div class="url-box">
-                        <input type="text" id="preview-url" readonly>
-                        <button class="btn-copy" id="copy-btn">Copy</button>
+                <h1 class="text-2xl sm:text-3xl font-bold text-slate-800">MDView</h1>
+                <p class="text-slate-500 mt-2 text-sm sm:text-base">Upload markdown files, get shareable preview URLs</p>
+            </header>
+            
+            <!-- Upload Box -->
+            <main>
+                <div id="upload-section">
+                    <div class="upload-box bg-white rounded-xl p-6 sm:p-8 text-center cursor-pointer" id="drop-zone">
+                        <input type="file" id="file-input" accept=".md,.markdown,.txt" hidden>
+                        <div class="text-4xl text-slate-300 mb-3">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                        </div>
+                        <p class="text-slate-700 font-medium text-sm sm:text-base">Drag & drop your .md file</p>
+                        <p class="text-slate-400 text-sm mt-1">or click to browse</p>
+                        <button class="btn mt-4 bg-primary hover:bg-primary-hover text-white font-medium py-3 px-6 rounded-lg transition-colors" id="upload-btn">
+                            <i class="fa-solid fa-folder-open mr-2"></i>Select File
+                        </button>
                     </div>
-                    <a class="btn-primary" id="view-btn" target="_blank">View Preview</a>
-                    <button class="btn-secondary" id="new-btn">Upload Another</button>
                 </div>
-            </div>
-        </main>
-
-        <footer>
-            <p>Files expire after 7 days • Max 1MB • Powered by Cloudflare</p>
-        </footer>
+                
+                <!-- Progress -->
+                <div id="progress" class="hidden text-center py-8">
+                    <div class="spinner mx-auto mb-4"></div>
+                    <p class="text-slate-500">Processing...</p>
+                </div>
+                
+                <!-- Result -->
+                <div id="result" class="hidden bg-white rounded-xl p-5 sm:p-6 text-center shadow-sm">
+                    <div class="text-4xl text-green-500 mb-3">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <p class="text-slate-600 font-medium mb-4">Your preview is ready!</p>
+                    <div class="bg-slate-50 rounded-lg p-3 mb-4">
+                        <input type="text" id="preview-url" readonly 
+                            class="w-full bg-transparent text-sm text-slate-600 outline-none truncate">
+                    </div>
+                    <div class="flex gap-2 mb-4">
+                        <button class="flex-1 btn-copy bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-3 px-4 rounded-lg transition-colors" id="copy-btn">
+                            <i class="fa-solid fa-copy mr-2"></i>Copy
+                        </button>
+                        <a class="flex-1 btn-primary bg-primary hover:bg-primary-hover text-white font-medium py-3 px-4 rounded-lg transition-colors no-underline" id="view-btn" target="_blank">
+                            <i class="fa-solid fa-eye mr-2"></i>View
+                        </a>
+                    </div>
+                    <button class="w-full btn-secondary bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium py-3 px-4 rounded-lg transition-colors" id="new-btn">
+                        <i class="fa-solid fa-arrow-rotate-left mr-2"></i>Upload Another
+                    </button>
+                </div>
+            </main>
+            
+            <!-- Footer -->
+            <footer class="text-center mt-6 sm:mt-8 text-slate-400 text-xs sm:text-sm">
+                <p><i class="fa-solid fa-clock mr-1"></i>Expires after 7 days <span class="mx-2">·</span> <i class="fa-solid fa-database mr-1"></i>Max 1MB</p>
+            </footer>
+        </div>
     </div>
-
+    
     <script src="/app.js"></script>
 </body>
 </html>

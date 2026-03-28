@@ -1,6 +1,7 @@
 const dropZone = document.getElementById('drop-zone');
 const fileInput = document.getElementById('file-input');
 const uploadBtn = document.getElementById('upload-btn');
+const uploadSection = document.getElementById('upload-section');
 const progress = document.getElementById('progress');
 const result = document.getElementById('result');
 const previewUrl = document.getElementById('preview-url');
@@ -56,7 +57,7 @@ async function uploadFile(file) {
     }
 
     // Show progress
-    dropZone.parentElement.classList.add('hidden');
+    uploadSection.classList.add('hidden');
     progress.classList.remove('hidden');
 
     try {
@@ -96,14 +97,13 @@ function showResult(url) {
 copyBtn.addEventListener('click', async () => {
     try {
         await navigator.clipboard.writeText(previewUrl.value);
-        copyBtn.textContent = 'Copied!';
-        setTimeout(() => copyBtn.textContent = 'Copy', 2000);
+        copyBtn.innerHTML = '<i class="fa-solid fa-check mr-2"></i>Copied!';
+        setTimeout(() => copyBtn.innerHTML = '<i class="fa-solid fa-copy mr-2"></i>Copy', 2000);
     } catch (error) {
-        // Fallback for older browsers
         previewUrl.select();
         document.execCommand('copy');
-        copyBtn.textContent = 'Copied!';
-        setTimeout(() => copyBtn.textContent = 'Copy', 2000);
+        copyBtn.innerHTML = '<i class="fa-solid fa-check mr-2"></i>Copied!';
+        setTimeout(() => copyBtn.innerHTML = '<i class="fa-solid fa-copy mr-2"></i>Copy', 2000);
     }
 });
 
@@ -112,6 +112,6 @@ newBtn.addEventListener('click', resetUpload);
 
 function resetUpload() {
     result.classList.add('hidden');
-    dropZone.parentElement.classList.remove('hidden');
+    uploadSection.classList.remove('hidden');
     fileInput.value = '';
 }
