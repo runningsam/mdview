@@ -1,0 +1,19 @@
+{
+  "name": "mdview",
+  "version": "1.0.0",
+  "description": "Markdown preview service - upload .md files and get shareable URLs",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler pages dev --compatibility-flag nodejs_compat",
+    "deploy": "wrangler pages deploy",
+    "build": "echo 'No build needed for static pages'"
+  },
+  "dependencies": {
+    "marked": "^15.0.7",
+    "highlight.js": "^11.11.1"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0",
+    "@cloudflare/workers-types": "^4.20250310.0"
+  }
+}

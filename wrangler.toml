@@ -1,0 +1,11 @@
+name = "mdview"
+compatibility_date = "2024-03-20"
+pages_build_output_dir = "public"
+
+[[kv_namespaces]]
+binding = "MDVIEW_KV"
+id = "df6d5fc21b0e41c79083c72deeec2ab0"
+
+[vars]
+MAX_FILE_SIZE = "1048576"  # 1MB
+TTL_DAYS = "7"

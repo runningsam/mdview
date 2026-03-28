@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MDView - Markdown Preview</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📄 MDView</h1>
+            <p class="subtitle">Upload markdown files and get shareable preview URLs</p>
+        </header>
+
+        <main>
+            <div id="upload-section">
+                <div class="upload-box" id="drop-zone">
+                    <input type="file" id="file-input" accept=".md,.markdown,.txt" hidden>
+                    <div class="upload-icon">📁</div>
+                    <p class="upload-text">Drag & drop your .md file here</p>
+                    <p class="upload-subtext">or click to select</p>
+                    <button class="btn" id="upload-btn">Select File</button>
+                </div>
+
+                <div id="progress" class="hidden">
+                    <div class="spinner"></div>
+                    <p>Processing...</p>
+                </div>
+
+                <div id="result" class="hidden">
+                    <div class="success-icon">✅</div>
+                    <p>Your preview URL:</p>
+                    <div class="url-box">
+                        <input type="text" id="preview-url" readonly>
+                        <button class="btn-copy" id="copy-btn">Copy</button>
+                    </div>
+                    <a class="btn-primary" id="view-btn" target="_blank">View Preview</a>
+                    <button class="btn-secondary" id="new-btn">Upload Another</button>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Files expire after 7 days • Max 1MB • Powered by Cloudflare</p>
+        </footer>
+    </div>
+
+    <script src="/app.js"></script>
+</body>
+</html>
