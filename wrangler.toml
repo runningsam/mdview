@@ -7,5 +7,5 @@ binding = "MDVIEW_KV"
 id = "df6d5fc21b0e41c79083c72deeec2ab0"
 
 [vars]
-MAX_FILE_SIZE = "1048576"  # 1MB
+MAX_FILE_SIZE = "1048576"
 TTL_DAYS = "7"
