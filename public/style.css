@@ -219,3 +219,192 @@ footer {
 
 .error-icon { font-size: 3rem; }
 .error-text { color: var(--error); font-size: 1.1rem; margin: 1rem 0; }
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+    body {
+        align-items: flex-start;
+        padding-top: 1rem;
+    }
+
+    .container {
+        padding: 1rem;
+    }
+
+    h1 {
+        font-size: 1.75rem;
+    }
+
+    .subtitle {
+        font-size: 0.9rem;
+    }
+
+    .upload-box {
+        padding: 2rem 1.5rem;
+    }
+
+    .upload-icon {
+        font-size: 2.5rem;
+    }
+
+    .upload-text {
+        font-size: 1rem;
+    }
+
+    .btn {
+        padding: 0.875rem 1.25rem;
+        font-size: 1rem;
+        width: 100%;
+        margin-top: 1.5rem;
+    }
+
+    #result {
+        padding: 1.5rem;
+    }
+
+    .url-box {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .url-box input {
+        font-size: 0.85rem;
+        text-overflow: ellipsis;
+    }
+
+    .btn-copy {
+        width: 100%;
+        padding: 0.875rem;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        display: block;
+        width: 100%;
+        margin: 0.5rem 0;
+        text-align: center;
+    }
+
+    /* Preview page mobile */
+    .preview-container {
+        padding: 1rem;
+    }
+
+    .preview-container header h1 {
+        font-size: 1.25rem;
+        word-break: break-word;
+    }
+
+    .markdown-body {
+        padding: 1.25rem;
+    }
+
+    .markdown-body h1 {
+        font-size: 1.5rem;
+    }
+
+    .markdown-body h2 {
+        font-size: 1.25rem;
+    }
+
+    .markdown-body h3 {
+        font-size: 1.1rem;
+    }
+
+    .markdown-body pre {
+        padding: 0.75rem;
+        font-size: 0.85rem;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .markdown-body code {
+        font-size: 0.85rem;
+        word-break: break-word;
+    }
+
+    .markdown-body ul,
+    .markdown-body ol {
+        padding-left: 1.5rem;
+    }
+
+    .markdown-body table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .markdown-body th,
+    .markdown-body td {
+        font-size: 0.9rem;
+        padding: 0.5rem;
+    }
+
+    .markdown-body blockquote {
+        margin-left: 0;
+        padding-left: 0.75rem;
+    }
+
+    .markdown-body img {
+        max-width: 100%;
+    }
+
+    footer {
+        padding: 0 1rem;
+        font-size: 0.8rem;
+    }
+
+    .preview-container footer a {
+        display: block;
+        text-align: center;
+        padding: 1rem;
+        background: var(--primary);
+        color: white;
+        border-radius: 8px;
+        margin-top: 1rem;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 375px) {
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .upload-box {
+        padding: 1.5rem 1rem;
+    }
+
+    .upload-icon {
+        font-size: 2rem;
+    }
+
+    .markdown-body {
+        padding: 1rem;
+    }
+
+    .markdown-body h1 {
+        font-size: 1.25rem;
+    }
+
+    .markdown-body h2 {
+        font-size: 1.1rem;
+    }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+    .upload-box {
+        border-width: 3px;
+    }
+
+    .btn,
+    .btn-copy,
+    .btn-primary,
+    .btn-secondary {
+        min-height: 48px;
+    }
+
+    .markdown-body a {
+        padding: 0.25rem 0;
+    }
+}
