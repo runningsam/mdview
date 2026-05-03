@@ -2,6 +2,53 @@
 
 Upload markdown files and get shareable preview URLs.
 
+## AI Agent Skill
+
+Let your AI coding agent (Claude Code, Codex, pi, etc.) upload markdown to MDView and get preview URLs — just by asking.
+
+The skill lives in `.pi/skills/mdview/` and includes everything needed:
+- `SKILL.md` — instructions for the agent
+- `scripts/upload.sh` — a helper script for uploading files from the terminal
+- `scripts/README.md` — script documentation
+
+### Installation
+
+Choose your AI agent harness:
+
+**Claude Code** — add to `~/.claude/settings.json`:
+```json
+{
+  "skills": ["/path/to/mdview/.pi/skills"]
+}
+```
+
+**pi** — auto-discovered from `.pi/skills/` when you open this project directory. Or add to `.pi/settings.json`:
+```json
+{
+  "skills": ["/absolute/path/to/mdview/.pi/skills"]
+}
+```
+
+**Codex** — add to `~/.codex/config.json`:
+```json
+{
+  "skills": ["/path/to/mdview/.pi/skills"]
+}
+```
+
+### Usage
+
+Once installed, tell your agent:
+
+> "Upload README.md to MDView at https://mdview.code123.in"
+
+The agent will read the file, POST to your MDView `/api/upload` endpoint, and return the public URL.
+
+You can also use the upload script directly:
+```bash
+.pi/skills/mdview/scripts/upload.sh https://mdview.code123.in README.md
+```
+
 ## Features
 
 - Upload .md files → get random, unguessable URLs
@@ -31,6 +78,13 @@ mdview/
 │   │   └── upload.js   # Upload endpoint
 │   └── v/
 │       └── [id].js     # View endpoint
+├── .pi/
+│   └── skills/
+│       └── mdview/            # AI agent skill (for others to use)
+│           ├── SKILL.md
+│           └── scripts/
+│               ├── README.md
+│               └── upload.sh
 ├── package.json
 ├── wrangler.toml       # Cloudflare config
 └── README.md
