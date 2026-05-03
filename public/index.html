@@ -217,15 +217,40 @@
                     <i class="fa-solid fa-robot text-primary"></i>
                     <h2 class="text-sm font-semibold text-slate-700">AI Agent Skill</h2>
                 </div>
-                <p class="text-xs sm:text-sm text-slate-500 mb-3">Let your AI coding agent (Claude Code, pi, Codex) upload markdown and get preview URLs — right from the terminal.</p>
-                <div class="bg-slate-50 rounded-lg p-3 text-xs text-slate-600 font-mono overflow-x-auto whitespace-nowrap">
-                    curl -X POST https://mdview.code123.in/api/upload \<br>
-                    &nbsp;&nbsp;-H "Content-Type: application/json" \<br>
-                    &nbsp;&nbsp;-d '{"content":"# Hello","filename":"hello.md"}'
+                <p class="text-xs sm:text-sm text-slate-500 mb-3">Let your AI coding agent (Claude Code, pi, Codex) upload markdown and get preview URLs from the terminal.</p>
+                
+                <!-- Quick Install -->
+                <div class="space-y-2 mb-3 text-xs">
+                    <div class="font-semibold text-slate-600">1. Install</div>
+                    <div class="bg-slate-50 rounded p-2 text-slate-600 font-mono overflow-x-auto whitespace-nowrap">
+                    mkdir -p ~/.agents/skills/mdview && \<br>
+                    curl -sL https://mdview.code123.in/skill/SKILL.md -o ~/.agents/skills/mdview/SKILL.md
+                    </div>
                 </div>
-                <a href="https://github.com/runningsam/mdview" target="_blank" class="inline-flex items-center gap-1 mt-3 text-xs text-primary hover:underline">
-                    <i class="fa-brands fa-github"></i> View on GitHub →
-                </a>
+                
+                <div class="space-y-2 mb-3 text-xs">
+                    <div class="font-semibold text-slate-600">2. Use (tell your agent)</div>
+                    <div class="bg-slate-50 rounded p-2 text-slate-600 font-mono overflow-x-auto whitespace-nowrap">
+                    "Upload README.md to MDView"
+                    </div>
+                </div>
+                
+                <div class="space-y-2 text-xs">
+                    <div class="font-semibold text-slate-600">3. Or use the script directly</div>
+                    <div class="bg-slate-50 rounded p-2 text-slate-600 font-mono overflow-x-auto whitespace-nowrap">
+                    curl -s https://mdview.code123.in/skill/scripts/upload.sh | \<br>
+                    &nbsp;&nbsp;bash -s https://mdview.code123.in README.md
+                    </div>
+                </div>
+                
+                <div class="flex gap-2 mt-4">
+                    <a href="/skill/mdview-skill.zip" download class="inline-flex items-center gap-1 text-xs bg-primary hover:bg-primary-hover text-white font-medium py-2 px-3 rounded-lg transition-colors no-underline">
+                        <i class="fa-solid fa-download"></i> Download ZIP
+                    </a>
+                    <a href="https://github.com/runningsam/mdview" target="_blank" class="inline-flex items-center gap-1 text-xs text-primary hover:underline">
+                        <i class="fa-brands fa-github"></i> GitHub
+                    </a>
+                </div>
             </section>
             
             <!-- Footer -->
