@@ -98,14 +98,43 @@ function renderPreview(html, filename, expires) {
         .markdown-body pre {
             background: #f1f5f9;
             padding: 1rem;
+            padding-top: 2.5rem;
             border-radius: 8px;
             overflow-x: auto;
             margin: 1rem 0;
+            position: relative;
         }
         
         .markdown-body pre code {
             background: none;
             padding: 0;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #e2e8f0;
+            border: none;
+            border-radius: 6px;
+            padding: 0.25rem 0.6rem;
+            font-size: 0.75rem;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .copy-btn:hover {
+            background: #cbd5e1;
+            color: #334155;
+        }
+
+        .copy-btn.copied {
+            background: #22c55e;
+            color: white;
         }
         
         .markdown-body ul, .markdown-body ol {
@@ -202,7 +231,26 @@ function renderPreview(html, filename, expires) {
         </footer>
     </div>
     
-    <script>hljs.highlightAll();</script>
+    <script>
+    hljs.highlightAll();
+    // Add copy buttons to all code blocks
+    document.querySelectorAll('.markdown-body pre').forEach(pre => {
+        const btn = document.createElement('button');
+        btn.className = 'copy-btn';
+        btn.innerHTML = '<i class="fa-solid fa-copy"></i> Copy';
+        btn.addEventListener('click', async () => {
+            const code = pre.querySelector('code') || pre;
+            await navigator.clipboard.writeText(code.textContent);
+            btn.classList.add('copied');
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+            setTimeout(() => {
+                btn.classList.remove('copied');
+                btn.innerHTML = '<i class="fa-solid fa-copy"></i> Copy';
+            }, 2000);
+        });
+        pre.appendChild(btn);
+    });
+    </script>
 </body>
 </html>
 `, {
