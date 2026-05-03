@@ -217,35 +217,44 @@
                     <i class="fa-solid fa-robot text-primary"></i>
                     <h2 class="text-sm font-semibold text-slate-700">AI Agent Skill</h2>
                 </div>
-                <p class="text-xs sm:text-sm text-slate-500 mb-3">Let your AI coding agent (Claude Code, pi, Codex) upload markdown and get preview URLs from the terminal.</p>
+                <p class="text-xs sm:text-sm text-slate-500 mb-3">Teach your AI agent to upload markdown and get preview URLs — one command.</p>
                 
-                <!-- Quick Install -->
-                <div class="space-y-2 mb-3 text-xs">
-                    <div class="font-semibold text-slate-600">1. Install</div>
-                    <div class="bg-slate-50 rounded p-2 text-slate-600 font-mono overflow-x-auto whitespace-nowrap">
-                    mkdir -p ~/.agents/skills/mdview && \<br>
-                    curl -sL https://mdview.code123.in/skill/SKILL.md -o ~/.agents/skills/mdview/SKILL.md
+                <!-- Auto install -->
+                <div class="mb-3">
+                    <div class="text-xs font-semibold text-green-600 mb-1">🚀 Auto-install (recommended)</div>
+                    <div class="bg-slate-900 rounded p-3 text-xs text-green-300 font-mono overflow-x-auto whitespace-nowrap" onclick="navigator.clipboard.writeText(this.innerText);this.style.background='#1a3a2a';setTimeout(()=>this.style.background='',800)" title="Click to copy">
+                    curl -sL https://mdview.code123.in/install.sh | bash
                     </div>
+                    <div class="text-xs text-slate-400 mt-1">Detects Claude Code, pi, Cursor, Codex, OpenCode and installs automatically.</div>
                 </div>
-                
-                <div class="space-y-2 mb-3 text-xs">
-                    <div class="font-semibold text-slate-600">2. Use (tell your agent)</div>
-                    <div class="bg-slate-50 rounded p-2 text-slate-600 font-mono overflow-x-auto whitespace-nowrap">
-                    "Upload README.md to MDView"
+
+                <!-- Manual per-agent -->
+                <details class="mb-3 text-xs">
+                    <summary class="font-semibold text-slate-600 cursor-pointer hover:text-primary">📋 Manual install (copy & paste for your agent)</summary>
+                    <div class="mt-2 space-y-2">
+                        <div class="text-slate-500 font-medium">Claude Code</div>
+                        <div class="bg-slate-50 rounded p-2 text-slate-600 font-mono overflow-x-auto whitespace-nowrap">
+                        mkdir -p ~/.claude/skills/mdview && \<br>
+                        curl -sL https://mdview.code123.in/skill/SKILL.md -o ~/.claude/skills/mdview/SKILL.md
+                        </div>
+                        <div class="text-slate-500 font-medium">Cursor</div>
+                        <div class="bg-slate-50 rounded p-2 text-slate-600 font-mono overflow-x-auto whitespace-nowrap">
+                        mkdir -p ~/.cursor/skills/mdview && \<br>
+                        curl -sL https://mdview.code123.in/skill/SKILL.md -o ~/.cursor/skills/mdview/SKILL.md
+                        </div>
+                        <div class="text-slate-500 font-medium">OpenCode</div>
+                        <div class="bg-slate-50 rounded p-2 text-slate-600 font-mono overflow-x-auto whitespace-nowrap">
+                        mkdir -p ~/.opencode/skills/mdview && \<br>
+                        curl -sL https://mdview.code123.in/skill/SKILL.md -o ~/.opencode/skills/mdview/SKILL.md
+                        </div>
                     </div>
-                </div>
+                </details>
                 
-                <div class="space-y-2 text-xs">
-                    <div class="font-semibold text-slate-600">3. Or use the script directly</div>
-                    <div class="bg-slate-50 rounded p-2 text-slate-600 font-mono overflow-x-auto whitespace-nowrap">
-                    curl -s https://mdview.code123.in/skill/scripts/upload.sh | \<br>
-                    &nbsp;&nbsp;bash -s https://mdview.code123.in README.md
-                    </div>
-                </div>
+                <div class="text-xs text-slate-500 mb-2">After install, tell your agent: <code class="bg-slate-100 px-1 rounded">"Upload README.md to MDView"</code></div>
                 
-                <div class="flex gap-2 mt-4">
+                <div class="flex gap-2">
                     <a href="/skill/mdview-skill.zip" download class="inline-flex items-center gap-1 text-xs bg-primary hover:bg-primary-hover text-white font-medium py-2 px-3 rounded-lg transition-colors no-underline">
-                        <i class="fa-solid fa-download"></i> Download ZIP
+                        <i class="fa-solid fa-download"></i> ZIP
                     </a>
                     <a href="https://github.com/runningsam/mdview" target="_blank" class="inline-flex items-center gap-1 text-xs text-primary hover:underline">
                         <i class="fa-brands fa-github"></i> GitHub
