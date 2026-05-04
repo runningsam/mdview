@@ -33,7 +33,7 @@ Upload markdown and get a public preview URL.
 |-------|------|----------|-------------|
 | `content` | string | **Yes** | Raw markdown text |
 | `filename` | string | No | Display name on the preview page |
-| `ttl` | number | No | Retention in days (1-90, default 7) |
+| `ttl` | number | No | Retention in days (1-365, default 7). Set to `0` for forever. |
 | `slug` | string | No | Custom URL path, e.g. `my-doc` → `/v/my-doc`. 1-64 chars: a-z, A-Z, 0-9, -, _, . |
 
 **Success (200):**
@@ -61,7 +61,7 @@ Upload markdown and get a public preview URL.
 **Limits:**
 
 - **Size:** 1MB max per upload
-- **Lifespan:** 1-90 days (default 7), set via `ttl` field
+- **Lifespan:** 1-365 days (default 7), set `ttl: 0` for forever
 
 ### GET /v/:id
 

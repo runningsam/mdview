@@ -32,8 +32,13 @@ export async function onRequestGet(context) {
 }
 
 function renderPreview(html, filename, expires) {
-    const expiresDate = new Date(expires);
-    const expiresStr = expiresDate.toLocaleDateString();
+    let expiresStr;
+    if (expires) {
+        const expiresDate = new Date(expires);
+        expiresStr = expiresDate.toLocaleDateString();
+    } else {
+        expiresStr = 'Never';
+    }
     
     return new Response(`
 <!DOCTYPE html>

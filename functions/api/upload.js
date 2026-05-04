@@ -21,16 +21,21 @@ export async function onRequestPost(context) {
             });
         }
 
-        // --- TTL: user-provided or default (7 days), clamped to [1, 90] ---
-        const maxTtl = parseInt(env.MAX_TTL_DAYS || '90');
-        let ttlDays = parseInt(ttl);
-        if (isNaN(ttlDays) || ttlDays < 1) {
-            ttlDays = parseInt(env.TTL_DAYS || '7');
+        // --- TTL: user-provided, default 7 days, 0 = forever ---
+        let ttlDays = null;  // null = forever (no KV expiration)
+        let ttlSeconds = null;
+        if (ttl === 0 || ttl === '0' || ttl === 'forever' || ttl === 'infinite') {
+            // Forever — no expiration set
+            ttlDays = 0;
+        } else {
+            const parsed = parseInt(ttl);
+            if (isNaN(parsed) || parsed < 1) {
+                ttlDays = parseInt(env.TTL_DAYS || '7');
+            } else {
+                ttlDays = Math.min(parsed, parseInt(env.MAX_TTL_DAYS || '365'));
+            }
+            ttlSeconds = ttlDays * 24 * 60 * 60;
         }
-        if (ttlDays > maxTtl) {
-            ttlDays = maxTtl;
-        }
-        const ttlSeconds = ttlDays * 24 * 60 * 60;
 
         // --- Slug / ID ---
         let id;
@@ -71,15 +76,20 @@ export async function onRequestPost(context) {
             id = generateId();
         }
         
+        const expires = ttlSeconds !== null
+            ? new Date(Date.now() + ttlSeconds * 1000).toISOString()
+            : null;
+
         const data = {
             content: content,
             filename: filename || 'document.md',
             created: new Date().toISOString(),
-            expires: new Date(Date.now() + ttlSeconds * 1000).toISOString(),
+            expires: expires,
             ttlDays: ttlDays,
         };
-        
-        await env.MDVIEW_KV.put(id, JSON.stringify(data), { expirationTtl: ttlSeconds });
+
+        const putOptions = ttlSeconds !== null ? { expirationTtl: ttlSeconds } : {};
+        await env.MDVIEW_KV.put(id, JSON.stringify(data), putOptions);
         
         const url = new URL(request.url).origin + `/v/${id}`;
         
