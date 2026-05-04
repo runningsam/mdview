@@ -33,6 +33,8 @@ Upload markdown and get a public preview URL.
 |-------|------|----------|-------------|
 | `content` | string | **Yes** | Raw markdown text |
 | `filename` | string | No | Display name on the preview page |
+| `ttl` | number | No | Retention in days (1-90, default 7) |
+| `slug` | string | No | Custom URL path, e.g. `my-doc` → `/v/my-doc`. 1-64 chars: a-z, A-Z, 0-9, -, _, . |
 
 **Success (200):**
 
@@ -40,7 +42,8 @@ Upload markdown and get a public preview URL.
 {
   "id": "aB3xK7mQ",
   "url": "https://mdview.code123.in/v/aB3xK7mQ",
-  "expires": "2026-05-10T12:00:00Z"
+  "expires": "2026-05-10T12:00:00Z",
+  "ttlDays": 7
 }
 ```
 
@@ -50,12 +53,15 @@ Upload markdown and get a public preview URL.
 |--------|------|---------|
 | 400 | `{"error": "Invalid content"}` | `content` is missing or not a string |
 | 400 | `{"error": "File too large (max 1MB)"}` | Content exceeds the size limit |
+| 400 | `{"error": "slug must be 1-64 chars: a-z, A-Z, 0-9, -, _, ."}` | Invalid slug format |
+| 400 | `{"error": "slug is reserved"}` | Slug conflicts with a system path |
+| 409 | `{"error": "slug already taken"}` | Slug already exists (choose another) |
 | 500 | `{"error": "Internal error"}` | Server failure |
 
 **Limits:**
 
 - **Size:** 1MB max per upload
-- **Lifespan:** 7 days, then auto-deleted
+- **Lifespan:** 1-90 days (default 7), set via `ttl` field
 
 ### GET /v/:id
 

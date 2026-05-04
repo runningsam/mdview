@@ -4,7 +4,7 @@ export async function onRequestGet(context) {
     const { request, env, params } = context;
     const id = params.id;
     
-    if (!id || id.length !== 8) {
+    if (!id || id.length < 1 || id.length > 64) {
         return renderError('Invalid document ID');
     }
     
@@ -42,6 +42,7 @@ function renderPreview(html, filename, expires) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${filename} - MDView</title>
+    <link rel="icon" type="image/svg+xml" href="/logo.svg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css">
@@ -200,8 +201,8 @@ function renderPreview(html, filename, expires) {
         <header class="bg-white rounded-xl p-4 sm:p-6 mb-4 sm:mb-6 shadow-sm">
             <div class="flex items-center justify-between flex-wrap gap-3">
                 <div class="flex items-center gap-3 min-w-0">
-                    <div class="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                        <i class="fa-solid fa-file-lines text-primary text-lg sm:text-xl"></i>
+                    <div class="flex-shrink-0">
+                        <img src="/logo.svg" alt="MDView" class="w-10 h-10 sm:w-12 sm:h-12">
                     </div>
                     <div class="min-w-0">
                         <h1 class="text-base sm:text-lg font-bold text-slate-800 truncate">${filename}</h1>
@@ -270,6 +271,7 @@ function renderError(message) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Error - MDView</title>
+    <link rel="icon" type="image/svg+xml" href="/logo.svg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script>

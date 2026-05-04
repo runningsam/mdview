@@ -5,7 +5,7 @@ export async function onRequestPost(context) {
     
     try {
         const body = await request.json();
-        const { content, filename } = body;
+        const { content, filename, ttl, slug } = body;
         
         if (!content || typeof content !== 'string') {
             return new Response(JSON.stringify({ error: 'Invalid content' }), {
@@ -20,29 +20,74 @@ export async function onRequestPost(context) {
                 headers: { 'Content-Type': 'application/json' },
             });
         }
-        
-        // Generate random ID (8 chars, URL-safe)
-        const id = generateId();
-        
-        // Store in KV with TTL (7 days = 604800 seconds)
-        const ttl = parseInt(env.TTL_DAYS || '7') * 24 * 60 * 60;
+
+        // --- TTL: user-provided or default (7 days), clamped to [1, 90] ---
+        const maxTtl = parseInt(env.MAX_TTL_DAYS || '90');
+        let ttlDays = parseInt(ttl);
+        if (isNaN(ttlDays) || ttlDays < 1) {
+            ttlDays = parseInt(env.TTL_DAYS || '7');
+        }
+        if (ttlDays > maxTtl) {
+            ttlDays = maxTtl;
+        }
+        const ttlSeconds = ttlDays * 24 * 60 * 60;
+
+        // --- Slug / ID ---
+        let id;
+        if (slug !== undefined && slug !== null) {
+            // User-provided custom slug
+            if (typeof slug !== 'string' || slug.length === 0) {
+                return new Response(JSON.stringify({ error: 'slug must be a non-empty string' }), {
+                    status: 400,
+                    headers: { 'Content-Type': 'application/json' },
+                });
+            }
+            // Validate slug: only a-z, A-Z, 0-9, hyphen, underscore, dot; 1-64 chars
+            if (!/^[\w\-.]{1,64}$/.test(slug)) {
+                return new Response(JSON.stringify({ error: 'slug must be 1-64 chars: a-z, A-Z, 0-9, -, _, .' }), {
+                    status: 400,
+                    headers: { 'Content-Type': 'application/json' },
+                });
+            }
+            // Reserve system words
+            const reserved = ['api', 'skill', 'install.sh', 'logo.svg', 'app.js', 'style.css', 'favicon.ico', 'index.html'];
+            if (reserved.includes(slug.toLowerCase()) || slug === '') {
+                return new Response(JSON.stringify({ error: 'slug is reserved' }), {
+                    status: 400,
+                    headers: { 'Content-Type': 'application/json' },
+                });
+            }
+            // Check if slug already exists
+            const existing = await env.MDVIEW_KV.get(slug);
+            if (existing !== null) {
+                return new Response(JSON.stringify({ error: 'slug already taken' }), {
+                    status: 409,
+                    headers: { 'Content-Type': 'application/json' },
+                });
+            }
+            id = slug;
+        } else {
+            // Auto-generated random ID
+            id = generateId();
+        }
         
         const data = {
             content: content,
             filename: filename || 'document.md',
             created: new Date().toISOString(),
-            expires: new Date(Date.now() + ttl * 1000).toISOString(),
+            expires: new Date(Date.now() + ttlSeconds * 1000).toISOString(),
+            ttlDays: ttlDays,
         };
         
-        await env.MDVIEW_KV.put(id, JSON.stringify(data), { expirationTtl: ttl });
+        await env.MDVIEW_KV.put(id, JSON.stringify(data), { expirationTtl: ttlSeconds });
         
-        // Return preview URL
         const url = new URL(request.url).origin + `/v/${id}`;
         
         return new Response(JSON.stringify({ 
             id: id,
             url: url,
             expires: data.expires,
+            ttlDays: ttlDays,
         }), {
             status: 200,
             headers: { 'Content-Type': 'application/json' },
