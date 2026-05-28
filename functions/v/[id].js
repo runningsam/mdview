@@ -24,14 +24,14 @@ export async function onRequestGet(context) {
         
         const htmlContent = await marked.parse(data.content);
         
-        return renderPreview(htmlContent, data.filename, data.expires);
+        return renderPreview(htmlContent, data.filename, data.expires, id);
         
     } catch (error) {
         return renderError('Error loading document');
     }
 }
 
-function renderPreview(html, filename, expires) {
+function renderPreview(html, filename, expires, id) {
     let expiresStr;
     if (expires) {
         const expiresDate = new Date(expires);
@@ -216,11 +216,18 @@ function renderPreview(html, filename, expires) {
                         </p>
                     </div>
                 </div>
-                <a href="/" class="flex-shrink-0 inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white text-sm font-medium py-2.5 px-4 rounded-lg transition-colors no-underline">
-                    <i class="fa-solid fa-upload"></i>
-                    <span class="hidden sm:inline">Upload New</span>
-                    <span class="sm:hidden">Upload</span>
-                </a>
+                <div class="flex items-center gap-2 flex-shrink-0">
+                    <a href="/p/${id}" target="_blank" class="inline-flex items-center gap-2 border border-slate-300 hover:border-slate-400 text-slate-600 hover:text-slate-800 text-sm font-medium py-2.5 px-4 rounded-lg transition-colors no-underline">
+                        <i class="fa-solid fa-print"></i>
+                        <span class="hidden sm:inline">打印版</span>
+                        <span class="sm:hidden">打印</span>
+                    </a>
+                    <a href="/" class="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white text-sm font-medium py-2.5 px-4 rounded-lg transition-colors no-underline">
+                        <i class="fa-solid fa-upload"></i>
+                        <span class="hidden sm:inline">Upload New</span>
+                        <span class="sm:hidden">Upload</span>
+                    </a>
+                </div>
             </div>
         </header>
         
