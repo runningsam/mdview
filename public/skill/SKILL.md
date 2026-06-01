@@ -31,10 +31,13 @@ Upload markdown and get a public preview URL.
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `content` | string | **Yes** | Raw markdown text |
+| `content` | string | **Yes\*** | Raw markdown text |
+| `url` | string | **Yes\*** | Public `https://` URL to fetch markdown from (server-side). Filename is derived from the URL path. |
 | `filename` | string | No | Display name on the preview page |
 | `ttl` | number | No | Retention in days (1-365, default 7). Set to `0` for forever. |
 | `slug` | string | No | Custom URL path, e.g. `my-doc` → `/v/my-doc`. 1-64 chars: a-z, A-Z, 0-9, -, _, . |
+
+\* Provide **exactly one** of `content` or `url`.
 
 **Success (200):**
 
@@ -51,7 +54,12 @@ Upload markdown and get a public preview URL.
 
 | Status | Body | Meaning |
 |--------|------|---------|
+| 400 | `{"error": "provide either content or url"}` | Neither or both of `content`/`url` supplied |
 | 400 | `{"error": "Invalid content"}` | `content` is missing or not a string |
+| 400 | `{"error": "url must be https"}` | `url` is not an `https://` URL |
+| 400 | `{"error": "url host not allowed"}` | `url` points at a private/reserved host |
+| 400 | `{"error": "remote file too large"}` | Fetched content exceeds the size limit |
+| 400 | `{"error": "failed to fetch url ..."}` | Remote fetch failed (timeout, non-2xx, redirects) |
 | 400 | `{"error": "File too large (max 1MB)"}` | Content exceeds the size limit |
 | 400 | `{"error": "slug must be 1-64 chars: a-z, A-Z, 0-9, -, _, ."}` | Invalid slug format |
 | 400 | `{"error": "slug is reserved"}` | Slug conflicts with a system path |
@@ -101,6 +109,14 @@ For short inline content, a direct curl works:
 curl -s -X POST https://mdview.code123.in/api/upload \
   -H "Content-Type: application/json" \
   -d '{"content": "# Hello\n\nSome markdown.", "filename": "note.md"}'
+```
+
+To publish a remote markdown file, pass `url` instead of `content` — the server fetches it (https only):
+
+```bash
+curl -s -X POST https://mdview.code123.in/api/upload \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://raw.githubusercontent.com/owner/repo/main/README.md"}'
 ```
 
 ### Step 3: Report the result

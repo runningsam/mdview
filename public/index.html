@@ -180,6 +180,22 @@
                             <i class="fa-solid fa-folder-open mr-2"></i>Select File
                         </button>
                     </div>
+
+                    <!-- Load from URL -->
+                    <div class="mt-4 bg-white rounded-xl p-4 sm:p-5 shadow-sm">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="fa-solid fa-link text-slate-400"></i>
+                            <span class="text-sm font-medium text-slate-700">Or load from a URL</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="url" id="url-input" placeholder="https://…/README.md"
+                                class="flex-1 min-w-0 bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3 text-sm text-slate-700 outline-none focus:border-primary">
+                            <button class="btn bg-primary hover:bg-primary-hover text-white font-medium py-2.5 px-4 rounded-lg transition-colors flex-shrink-0" id="url-btn">
+                                <i class="fa-solid fa-download mr-1 sm:mr-2"></i><span class="hidden sm:inline">Load</span>
+                            </button>
+                        </div>
+                        <p class="text-slate-400 text-xs mt-2">We fetch it server-side. https only.</p>
+                    </div>
                 </div>
                 
                 <!-- Progress -->

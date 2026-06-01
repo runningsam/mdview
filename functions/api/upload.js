@@ -1,19 +1,48 @@
 import { marked } from 'marked';
+import { fetchRemoteMarkdown, FetchRemoteError } from '../lib/fetch-remote.js';
 
 export async function onRequestPost(context) {
     const { request, env } = context;
-    
+
     try {
         const body = await request.json();
-        const { content, filename, ttl, slug } = body;
-        
+        const { url, ttl, slug } = body;
+        let { content, filename } = body;
+
+        const hasContent = typeof content === 'string' && content.length > 0;
+        const hasUrl = typeof url === 'string' && url.length > 0;
+
+        if (hasContent === hasUrl) {
+            return new Response(JSON.stringify({ error: 'provide either content or url' }), {
+                status: 400,
+                headers: { 'Content-Type': 'application/json' },
+            });
+        }
+
+        // Server-side fetch when a url is given (avoids browser CORS).
+        if (hasUrl) {
+            try {
+                const remote = await fetchRemoteMarkdown(url, env);
+                content = remote.content;
+                if (!filename) filename = remote.filename;
+            } catch (err) {
+                if (err instanceof FetchRemoteError) {
+                    return new Response(JSON.stringify({ error: err.message }), {
+                        status: 400,
+                        headers: { 'Content-Type': 'application/json' },
+                    });
+                }
+                throw err;
+            }
+        }
+
         if (!content || typeof content !== 'string') {
             return new Response(JSON.stringify({ error: 'Invalid content' }), {
                 status: 400,
                 headers: { 'Content-Type': 'application/json' },
             });
         }
-        
+
         if (content.length > parseInt(env.MAX_FILE_SIZE || '1048576')) {
             return new Response(JSON.stringify({ error: 'File too large (max 1MB)' }), {
                 status: 400,
@@ -91,11 +120,11 @@ export async function onRequestPost(context) {
         const putOptions = ttlSeconds !== null ? { expirationTtl: ttlSeconds } : {};
         await env.MDVIEW_KV.put(id, JSON.stringify(data), putOptions);
         
-        const url = new URL(request.url).origin + `/v/${id}`;
-        
-        return new Response(JSON.stringify({ 
+        const previewUrl = new URL(request.url).origin + `/v/${id}`;
+
+        return new Response(JSON.stringify({
             id: id,
-            url: url,
+            url: previewUrl,
             expires: data.expires,
             ttlDays: ttlDays,
         }), {
