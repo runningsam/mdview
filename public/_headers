@@ -1,2 +1,12 @@
 /skill/mdview-skill.zip
   Content-Type: application/zip
+
+# Always revalidate front-end assets so deploys take effect immediately.
+# no-cache = the browser may store it but must check the etag each load
+# (cheap 304 when unchanged), preventing stale JS/CSS after a deploy.
+/app.js
+  Cache-Control: no-cache
+/style.css
+  Cache-Control: no-cache
+/tailwind.css
+  Cache-Control: no-cache
