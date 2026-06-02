@@ -5,11 +5,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-npm run dev      # Local dev server (Cloudflare Pages + Functions)
-npm run deploy   # Deploy to Cloudflare Pages
+npm run dev        # Local dev server (Cloudflare Pages + Functions)
+npm run build:css  # Compile Tailwind → public/tailwind.css (used classes only, minified)
+npm run watch:css  # Rebuild tailwind.css on change during local dev
+npm run deploy     # Build CSS, then deploy to Cloudflare Pages
 ```
 
-No build step — `public/` is served as-is.
+The only build step is the Tailwind CSS compile. `public/tailwind.css` is committed (so a bare
+`public/` deploy works), and `npm run deploy` regenerates it first so it never goes stale.
+Tailwind (v3) scans `public/**/*.{html,js}` and `functions/**/*.js` for class names — see
+`tailwind.config.cjs`. Source is `src/input.css`. Everything else in `public/` is served as-is.
 
 ## Architecture
 
