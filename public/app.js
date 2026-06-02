@@ -8,6 +8,8 @@ const previewUrl = document.getElementById('preview-url');
 const copyBtn = document.getElementById('copy-btn');
 const viewBtn = document.getElementById('view-btn');
 const newBtn = document.getElementById('new-btn');
+const urlInput = document.getElementById('url-input');
+const urlBtn = document.getElementById('url-btn');
 
 // Click to upload
 uploadBtn.addEventListener('click', () => fileInput.click());
@@ -85,6 +87,41 @@ async function uploadFile(file) {
     }
 }
 
+// Load from URL — server fetches it (avoids browser CORS)
+urlBtn.addEventListener('click', loadFromUrl);
+urlInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') loadFromUrl();
+});
+
+async function loadFromUrl() {
+    const url = urlInput.value.trim();
+    if (!url) {
+        alert('Please enter a URL');
+        return;
+    }
+
+    uploadSection.classList.add('hidden');
+    progress.classList.remove('hidden');
+
+    try {
+        const response = await fetch('/api/upload', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url: url }),
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.error || 'Failed to load URL');
+        }
+
+        showResult(data.url);
+    } catch (error) {
+        alert('Could not load URL: ' + error.message);
+        resetUpload();
+    }
+}
+
 // Show result
 function showResult(url) {
     progress.classList.add('hidden');
@@ -114,4 +151,5 @@ function resetUpload() {
     result.classList.add('hidden');
     uploadSection.classList.remove('hidden');
     fileInput.value = '';
+    urlInput.value = '';
 }
